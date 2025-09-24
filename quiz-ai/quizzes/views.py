@@ -5,3 +5,7 @@ from .serializers import QuizSerializer
 class QuizListCreateView(generics.ListCreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+
+class QuizDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
