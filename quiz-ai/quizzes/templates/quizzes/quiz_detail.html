@@ -1,0 +1,51 @@
+{% extends 'quizzes/base.html' %}
+{% block title %}Detalle Quiz{% endblock %}
+
+{% block content %}
+<h1 id="quiz-title"></h1>
+<p id="quiz-description"></p>
+
+<hr>
+<h3>Preguntas</h3>
+<ul id="questions-list" class="list-group"></ul>
+
+<div id="quiz-actions" class="mt-4">
+  <a href="/quiz/{{ quiz_id }}/edit/" class="btn btn-warning">✏️ Editar Quiz</a>
+  <button class="btn btn-danger" onclick="deleteQuiz({{ quiz_id }})">🗑️ Eliminar Quiz</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch(`/api/v1/quizzes/{{ quiz_id }}/`)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById("quiz-title").innerText = data.title;
+            document.getElementById("quiz-description").innerText = data.description;
+            const qList = document.getElementById("questions-list");
+            data.questions.forEach(q => {
+                const li = document.createElement("li");
+                li.className = "list-group-item";
+                li.innerHTML = `<strong>${q.text}</strong><br>
+                <ul>${q.choices.map(c => `<li>${c.text}</li>`).join("")}</ul>
+                <a href="/question/${q.id}/edit/" class="btn btn-sm btn-outline-warning">Editar</a>
+                <a href="/choice/new/${q.id}/" class="btn btn-sm btn-outline-primary">Agregar Opción</a>`;
+                qList.appendChild(li);
+            });
+        });
+});
+
+function deleteQuiz(id) {
+    if (confirm("¿Seguro de eliminar este quiz?")) {
+        fetch(`/api/v1/quizzes/${id}/`, { method: "DELETE" })
+        .then(r => {
+            if (r.ok) {
+                alert("Quiz eliminado ✅");
+                window.location.href = "/";
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

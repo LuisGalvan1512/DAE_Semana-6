@@ -1,0 +1,36 @@
+{% extends 'quizzes/base.html' %}
+{% block title %}Nueva Pregunta{% endblock %}
+
+{% block content %}
+<h1>Agregar Pregunta</h1>
+<form id="question-form">
+  <input type="hidden" id="quiz_id" value="{{ quiz_id }}">
+  <div class="mb-3">
+    <label class="form-label">Texto de la Pregunta</label>
+    <input type="text" class="form-control" id="text" required>
+  </div>
+  <button type="submit" class="btn btn-success">Guardar</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("question-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const quizId = document.getElementById("quiz_id").value;
+    fetch("/api/v1/questions/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            quiz: quizId,
+            text: document.getElementById("text").value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        alert("Pregunta creada ✅");
+        window.location.href = `/quiz/${quizId}/`;
+    });
+});
+</script>
+{% endblock %}

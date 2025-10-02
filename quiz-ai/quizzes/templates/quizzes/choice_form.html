@@ -1,0 +1,42 @@
+{% extends 'quizzes/base.html' %}
+{% block title %}Nueva Opción{% endblock %}
+
+{% block content %}
+<h1>Agregar Opción</h1>
+<form id="choice-form">
+  <input type="hidden" id="question_id" value="{{ question_id }}">
+  <div class="mb-3">
+    <label class="form-label">Texto de la opción</label>
+    <input type="text" class="form-control" id="text" required>
+  </div>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="is_correct">
+    <label class="form-check-label">¿Es la opción correcta?</label>
+  </div>
+  <button type="submit" class="btn btn-success">Guardar</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("choice-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const questionId = document.getElementById("question_id").value;
+    fetch("/api/v1/choices/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            question: questionId,
+            text: document.getElementById("text").value,
+            is_correct: document.getElementById("is_correct").checked
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        alert("Opción creada ✅");
+        // volvemos al detalle del quiz
+        window.history.back();
+    });
+});
+</script>
+{% endblock %}

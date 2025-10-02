@@ -1,0 +1,5 @@
+body { background:#f8f9fa; }
+.card-question { margin-bottom:1rem; }
+.choice-label { cursor:pointer; }
+.result-correct { background:#d4edda; }
+.result-wrong { background:#f8d7da; }
